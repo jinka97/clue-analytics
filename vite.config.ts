@@ -5,7 +5,7 @@ import autoprefixer from 'autoprefixer';
 
 export default defineConfig({
   plugins: [react()],
-  base: '/',
+  base: '/clue-analytics/',
   css: {
     postcss: {
       plugins: [tailwindcss(), autoprefixer()],
