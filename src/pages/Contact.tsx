@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
+import axios from "axios";
 
 export default function Contact() {
   const [formData, setFormData] = useState({
@@ -9,38 +10,78 @@ export default function Contact() {
   });
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+
+  const validateEmail = (email: string) => {
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return re.test(email);
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
     setError("");
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (formData.name && formData.email && formData.message) {
-      console.log("Contact Form Submitted:", formData);
+    setError("");
+    setSubmitted(false);
+
+    const { name, email, message } = formData;
+
+    // Client-side validation
+    if (!name) {
+      setError("Please enter your name.");
+      return;
+    }
+    if (!email) {
+      setError("Please enter your email address.");
+      return;
+    }
+    if (!validateEmail(email)) {
+      setError("Please enter a valid email address.");
+      return;
+    }
+    if (!message) {
+      setError("Please enter a message.");
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      const response = await axios.post(
+        "https://clue-analytics-backend.onrender.com/contact",
+        { name, email, message },
+        { headers: { "Content-Type": "application/json" } }
+      );
       setSubmitted(true);
       setFormData({ name: "", email: "", message: "" });
-      setError("");
-    } else {
-      setError("Please fill out all fields.");
+      console.log("Contact Form Submission:", response.data.message);
+    } catch (err: any) {
+      setError(
+        err.response?.data?.error || "Failed to send message. Please try again."
+      );
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
-    <div className="section bg-white">
-      <div className="container">
+    <div className="section bg-white py-16">
+      <div className="container max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
-          className="max-w-lg mx-auto text-center"
-          initial={{ opacity: 0, y: 30 }}
+          className="text-center max-w-2xl mx-auto"
+          initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
-          <h1 className="text-4xl sm:text-5xl font-bold mb-6 text-blue-900">Contact Us</h1>
-          <p className="text-lg text-gray-700 mb-8">
-            Have questions, proposals, or ready to start your AI journey? We’re here to help.
+          <h1 className="text-4xl sm:text-5xl font-bold mb-6 text-blue-900">
+            Contact Us
+          </h1>
+          <p className="text-lg text-gray-700 mb-8 leading-relaxed">
+            Have a question or want to collaborate? Reach out to us, and we’ll get back to you as soon as possible.
           </p>
-
           {submitted ? (
             <motion.p
               className="text-green-600 text-lg"
@@ -48,47 +89,50 @@ export default function Contact() {
               animate={{ opacity: 1 }}
               transition={{ duration: 0.4 }}
             >
-              Thank you for reaching out! We’ll get back to you soon.
+              Thank you for your message! We’ll be in touch soon.
             </motion.p>
           ) : (
-            <form onSubmit={handleSubmit} className="space-y-6 text-left">
+            <form onSubmit={handleSubmit} className="space-y-6">
               {error && (
-                <p className="text-red-600 text-sm text-center" role="alert">
+                <p className="text-red-600 text-sm text-center" role="alert" id="form-error">
                   {error}
                 </p>
               )}
               <div>
-                <label htmlFor="name" className="block mb-1 font-medium text-gray-900">
+                <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
                   Name
                 </label>
                 <input
-                  id="name"
                   type="text"
+                  id="name"
                   name="name"
                   value={formData.name}
                   onChange={handleChange}
+                  placeholder="Your name"
                   className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm"
                   required
-                  aria-describedby={error && "name-error"}
+                  disabled={isLoading}
                 />
               </div>
               <div>
-                <label htmlFor="email" className="block mb-1 font-medium text-gray-900">
+                <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
                   Email
                 </label>
                 <input
-                  id="email"
                   type="email"
+                  id="email"
                   name="email"
                   value={formData.email}
                   onChange={handleChange}
+                  placeholder="Your email"
                   className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm"
                   required
-                  aria-describedby={error && "email-error"}
+                  disabled={isLoading}
+                  aria-describedby={error ? "form-error" : undefined}
                 />
               </div>
               <div>
-                <label htmlFor="message" className="block mb-1 font-medium text-gray-900">
+                <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-1">
                   Message
                 </label>
                 <textarea
@@ -96,18 +140,19 @@ export default function Contact() {
                   name="message"
                   value={formData.message}
                   onChange={handleChange}
+                  placeholder="Your message"
                   rows={5}
                   className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm"
                   required
-                  aria-describedby={error && "message-error"}
+                  disabled={isLoading}
                 />
               </div>
               <button
                 type="submit"
-                className="btn w-full sm:w-auto"
-                aria-label="Send message"
+                className={`btn w-full sm:w-auto ${isLoading ? "opacity-50 cursor-not-allowed" : ""}`}
+                disabled={isLoading}
               >
-                Send Message
+                {isLoading ? "Sending..." : "Send Message"}
               </button>
             </form>
           )}

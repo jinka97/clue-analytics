@@ -1,52 +1,98 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Clue Analytics provides expert AI and ML consulting to drive business results through strategy, development, and training." />
-    <meta name="keywords" content="AI consulting, machine learning, AI strategy, ML development, AI training, Clue Analytics" />
-    <meta name="author" content="Clue Analytics" />
-    <meta property="og:title" content="Clue Analytics - AI & ML Consulting" />
-    <meta property="og:description" content="Transform your business with our AI and ML expertise. From strategy to implementation, we deliver results." />
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://www.clueanalytics.com" />
-    <meta property="og:image" content="/assets/og-image.jpg" />
-    <title>Clue Analytics - AI & ML Consulting</title>
-    <link rel="icon" type="image/png" href="/assets/favicon.png" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
-    <!-- Google Tag Manager -->
-    <script>
-      (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-      new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-      j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-      'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-      })(window,document,'script','dataLayer','GTM-XXXXXXX');
-    </script>
-    <!-- End Google Tag Manager -->
-  </head>
-  <body>
-    <!-- Google Tag Manager (noscript) -->
-    <noscript>
-      <iframe
-        src="https://www.googletagmanager.com/ns.html?id=GTM-XXXXXXX"
-        height="0"
-        width="0"
-        style="display:none;visibility:hidden"
-      ></iframe>
-    </noscript>
-    <!-- End Google Tag Manager (noscript) -->
-    <div id="root"></div>
-    <!-- Remove the script tag; Vite will inject the correct script -->
-  </body>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Clue Analytics provides expert AI and ML consulting to drive business results through strategy, development, and training." />
+  <meta name="keywords" content="AI consulting, machine learning, AI strategy, ML development, AI training, Clue Analytics" />
+  <meta name="author" content="Clue Analytics" />
+  <meta property="og:title" content="Clue Analytics - AI & ML Consulting" />
+  <meta property="og:description" content="Transform your business with our AI and ML expertise. From strategy to implementation, we deliver results." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://jinka97.github.io/clue-analytics/" />
+  <meta property="og:image" content="/assets/og-image.jpg" />
+  <link rel="icon" type="image/png" href="/assets/favicon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+
+  <title>Clue Analytics - AI & ML Consulting</title>
+</head>
+<body class="font-sans bg-gray-50 text-gray-800">
+  <div id="root"></div>
+
+  <!-- Cookie Consent Popup -->
+  <div id="cookie-consent" class="hidden fixed bottom-0 left-0 w-full bg-gray-800 text-white p-4 z-50">
+    <div class="max-w-4xl mx-auto flex flex-col md:flex-row items-center justify-between">
+      <p class="text-sm mb-4 md:mb-0">
+        We use cookies to enhance your experience and analyze site usage via Google Analytics. By continuing to use this site, you consent to our use of cookies. Learn more in our <a href="#/privacy-policy" class="underline">Privacy Policy</a>.
+      </p>
+      <div class="flex space-x-4">
+        <button id="accept-cookies" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded">Accept</button>
+        <button id="decline-cookies" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded">Decline</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer with Privacy Notice -->
+  <footer class="bg-gray-200 py-4 mt-8">
+    <div class="max-w-4xl mx-auto px-4 text-center text-sm text-gray-600">
+      <p>© 2025 Clue Analytics. All rights reserved.</p>
+      <p class="mt-2">
+        This site uses Google Analytics to collect anonymous data to improve our services. For more information, see our <a href="#/privacy-policy" class="underline">Privacy Policy</a>.
+      </p>
+    </div>
+  </footer>
+
+  <!-- Cookie Consent Script -->
+  <script>
+    // Function to load Google Analytics script
+    function loadGoogleAnalytics() {
+      const script1 = document.createElement('script');
+      script1.async = true;
+      script1.src = 'https://www.googletagmanager.com/gtag/js?id=G-P25DGGT6J6';
+      document.head.appendChild(script1);
+
+      const script2 = document.createElement('script');
+      script2.innerHTML = `
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-P25DGGT6J6');
+      `;
+      document.head.appendChild(script2);
+    }
+
+    // Check if user has already made a choice
+    const cookieConsent = localStorage.getItem('cookieConsent');
+    const cookiePopup = document.getElementById('cookie-consent');
+
+    if (!cookieConsent) {
+      // Show popup if no choice has been made
+      cookiePopup.classList.remove('hidden');
+    } else if (cookieConsent === 'accepted') {
+      // Load Google Analytics if previously accepted
+      loadGoogleAnalytics();
+    }
+
+    // Event listeners for Accept/Decline buttons
+    document.getElementById('accept-cookies').addEventListener('click', () => {
+      localStorage.setItem('cookieConsent', 'accepted');
+      cookiePopup.classList.add('hidden');
+      loadGoogleAnalytics();
+    });
+
+    document.getElementById('decline-cookies').addEventListener('click', () => {
+      localStorage.setItem('cookieConsent', 'declined');
+      cookiePopup.classList.add('hidden');
+      // Optionally clear any existing analytics cookies (not implemented here)
+    });
+  </script>
+
+  <script type="module" src="/src/main.tsx"></script>
+</body>
 </html>
-
-
-
-
-
-
 
 
 

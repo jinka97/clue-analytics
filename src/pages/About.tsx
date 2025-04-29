@@ -35,21 +35,21 @@ export default function About() {
           <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
             <div className="text-center">
               <div className="w-32 h-32 mx-auto mb-4 rounded-full bg-gray-200" aria-hidden="true"></div>
-              <h3 className="text-xl font-semibold text-gray-900">Dr. Jane Doe</h3>
+              <h3 className="text-xl font-semibold text-gray-900">Dr. ID</h3>
               <p className="text-gray-600">Chief AI Strategist</p>
-              <p className="text-gray-700 mt-2">PhD in Machine Learning with 15+ years driving AI innovation.</p>
+              <p className="text-gray-700 mt-2">PhD in ML/CS with 13+ years experience.</p>
             </div>
             <div className="text-center">
               <div className="w-32 h-32 mx-auto mb-4 rounded-full bg-gray-200" aria-hidden="true"></div>
-              <h3 className="text-xl font-semibold text-gray-900">John Smith</h3>
+              <h3 className="text-xl font-semibold text-gray-900">M J</h3>
               <p className="text-gray-600">Lead Data Scientist</p>
               <p className="text-gray-700 mt-2">Expert in scalable ML pipelines and predictive analytics.</p>
             </div>
             <div className="text-center">
               <div className="w-32 h-32 mx-auto mb-4 rounded-full bg-gray-200" aria-hidden="true"></div>
-              <h3 className="text-xl font-semibold text-gray-900">Emily Chen</h3>
+              <h3 className="text-xl font-semibold text-gray-900">H A</h3>
               <p className="text-gray-600">AI Training Director</p>
-              <p className="text-gray-700 mt-2">Specializes in AI workshops and team upskilling programs.</p>
+              <p className="text-gray-700 mt-2">Specialises in AI workshops and team upskilling programs.</p>
             </div>
           </div>
         </motion.div>

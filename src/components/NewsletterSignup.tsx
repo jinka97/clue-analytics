@@ -1,27 +1,50 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
+import axios from "axios";
 
 export default function NewsletterSignup() {
   const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const validateEmail = (email: string) => {
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return re.test(email);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError("");
+    setSubmitted(false);
+
+    // Client-side validation
     if (!email) {
       setError("Please enter an email address.");
-    } else if (!validateEmail(email)) {
+      return;
+    }
+    if (!validateEmail(email)) {
       setError("Please enter a valid email address.");
-    } else {
-      console.log("Newsletter Signup:", email);
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      const response = await axios.post(
+        "https://clue-analytics-backend.onrender.com/subscribe",
+        { email },
+        { headers: { "Content-Type": "application/json" } }
+      );
       setSubmitted(true);
       setEmail("");
-      setError("");
+      console.log("Newsletter Signup:", response.data.message);
+    } catch (err: any) {
+      setError(
+        err.response?.data?.error || "Failed to subscribe. Please try again."
+      );
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -50,7 +73,7 @@ export default function NewsletterSignup() {
           ) : (
             <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-4 justify-center">
               {error && (
-                <p className="text-red-600 text-sm text-center" role="alert">
+                <p className="text-red-600 text-sm text-center" role="alert" id="email-error">
                   {error}
                 </p>
               )}
@@ -64,14 +87,16 @@ export default function NewsletterSignup() {
                 placeholder="Enter your email"
                 className="px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm w-full sm:w-64"
                 required
-                aria-describedby={error && "email-error"}
+                disabled={isLoading}
+                aria-describedby={error ? "email-error" : undefined}
               />
               <button
                 type="submit"
-                className="btn sm:w-auto"
+                className={`btn sm:w-auto ${isLoading ? "opacity-50 cursor-not-allowed" : ""}`}
                 aria-label="Subscribe to newsletter"
+                disabled={isLoading}
               >
-                Subscribe
+                {isLoading ? "Subscribing..." : "Subscribe"}
               </button>
             </form>
           )}

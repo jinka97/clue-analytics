@@ -4,8 +4,8 @@ import tailwindcss from 'tailwindcss';
 import autoprefixer from 'autoprefixer';
 
 export default defineConfig({
+  base: '/clue-analytics/',  // Important for GitHub Pages!
   plugins: [react()],
-  base: '/clue-analytics/',
   css: {
     postcss: {
       plugins: [tailwindcss(), autoprefixer()],
@@ -15,3 +15,6 @@ export default defineConfig({
     exclude: ['react-router-dom'],
   },
 });
+
+
+

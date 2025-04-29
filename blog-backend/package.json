@@ -1,17 +1,23 @@
 {
   "name": "blog-backend",
   "version": "1.0.0",
-  "main": "index.js",
+  "description": "",
+  "main": "server.js",
   "scripts": {
+    "start": "node server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": "",
   "dependencies": {
     "axios": "^1.9.0",
-    "express": "^5.1.0",
-    "xml2js": "^0.6.2"
+    "basic-auth": "^2.0.1",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.1",
+    "express-rate-limit": "^7.4.1",
+    "node-cache": "^5.1.2",
+    "pg": "^8.15.6",
+    "sqlite3": "^5.1.7"
   }
 }
