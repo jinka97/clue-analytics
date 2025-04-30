@@ -1,3 +1,5 @@
+# analytics
+.env
 # Logs
 logs
 *.log

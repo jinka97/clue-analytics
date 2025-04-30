@@ -93,32 +93,32 @@ const Admin: React.FC = () => {
   if (!isAuthenticated) {
     return (
       <div className="max-w-md mx-auto py-8 px-4">
-        <h1 className="text-3xl font-bold mb-6 text-center">Admin Login</h1>
-        {error && <p className="text-red-500 mb-4">{error}</p>}
+        <h1 className="text-3xl font-bold text-gray-800 dark:text-gray-200 mb-6 text-center">Admin Login</h1>
+        {error && <p className="text-red-500 dark:text-red-400 mb-4">{error}</p>}
         <form onSubmit={handleLogin} className="space-y-4">
           <div>
-            <label htmlFor="username" className="block text-sm font-medium">Username</label>
+            <label htmlFor="username" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Username</label>
             <input
               type="text"
               id="username"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              className="w-full p-2 border rounded"
+              className="w-full p-2 border rounded bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200 border-gray-300 dark:border-gray-600"
               required
             />
           </div>
           <div>
-            <label htmlFor="password" className="block text-sm font-medium">Password</label>
+            <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Password</label>
             <input
               type="password"
               id="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full p-2 border rounded"
+              className="w-full p-2 border rounded bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200 border-gray-300 dark:border-gray-600"
               required
             />
           </div>
-          <button type="submit" className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600">
+          <button type="submit" className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700">
             Login
           </button>
         </form>
@@ -130,33 +130,33 @@ const Admin: React.FC = () => {
   return (
     <div className="max-w-6xl mx-auto py-8 px-4">
       <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold">Admin Dashboard</h1>
-        <button onClick={handleLogout} className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">
+        <h1 className="text-3xl font-bold text-gray-800 dark:text-gray-200">Admin Dashboard</h1>
+        <button onClick={handleLogout} className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 dark:bg-red-600 dark:hover:bg-red-700">
           Logout
         </button>
       </div>
 
-      {error && <p className="text-red-500 mb-4">{error}</p>}
+      {error && <p className="text-red-500 dark:text-red-400 mb-4">{error}</p>}
 
-      <h2 className="text-2xl font-semibold mb-4">Subscribers</h2>
+      <h2 className="text-2xl font-semibold text-gray-800 dark:text-gray-200 mb-4">Subscribers</h2>
       {subscribers.length === 0 ? (
-        <p>No subscribers found.</p>
+        <p className="text-gray-600 dark:text-gray-400">No subscribers found.</p>
       ) : (
         <div className="overflow-x-auto">
-          <table className="w-full border-collapse border">
+          <table className="w-full border-collapse border border-gray-300 dark:border-gray-600">
             <thead>
-              <tr className="bg-gray-200">
-                <th className="border p-2">ID</th>
-                <th className="border p-2">Email</th>
-                <th className="border p-2">Subscribed At</th>
+              <tr className="bg-gray-200 dark:bg-gray-700">
+                <th className="border border-gray-300 dark:border-gray-600 p-2 text-gray-800 dark:text-gray-200">ID</th>
+                <th className="border border-gray-300 dark:border-gray-600 p-2 text-gray-800 dark:text-gray-200">Email</th>
+                <th className="border border-gray-300 dark:border-gray-600 p-2 text-gray-800 dark:text-gray-200">Subscribed At</th>
               </tr>
             </thead>
             <tbody>
               {subscribers.map((subscriber) => (
-                <tr key={subscriber.id}>
-                  <td className="border p-2">{subscriber.id}</td>
-                  <td className="border p-2">{subscriber.email}</td>
-                  <td className="border p-2">{subscriber.subscribed_at}</td>
+                <tr key={subscriber.id} className="bg-white dark:bg-gray-800">
+                  <td className="border border-gray-300 dark:border-gray-600 p-2 text-gray-800 dark:text-gray-200">{subscriber.id}</td>
+                  <td className="border border-gray-300 dark:border-gray-600 p-2 text-gray-800 dark:text-gray-200">{subscriber.email}</td>
+                  <td className="border border-gray-300 dark:border-gray-600 p-2 text-gray-800 dark:text-gray-200">{subscriber.subscribed_at}</td>
                 </tr>
               ))}
             </tbody>
@@ -164,29 +164,29 @@ const Admin: React.FC = () => {
         </div>
       )}
 
-      <h2 className="text-2xl font-semibold mb-4 mt-8">Messages</h2>
+      <h2 className="text-2xl font-semibold text-gray-800 dark:text-gray-200 mb-4 mt-8">Messages</h2>
       {messages.length === 0 ? (
-        <p>No messages found.</p>
+        <p className="text-gray-600 dark:text-gray-400">No messages found.</p>
       ) : (
         <div className="overflow-x-auto">
-          <table className="w-full border-collapse border">
+          <table className="w-full border-collapse border border-gray-300 dark:border-gray-600">
             <thead>
-              <tr className="bg-gray-200">
-                <th className="border p-2">ID</th>
-                <th className="border p-2">Name</th>
-                <th className="border p-2">Email</th>
-                <th className="border p-2">Message</th>
-                <th className="border p-2">Sent At</th>
+              <tr className="bg-gray-200 dark:bg-gray-700">
+                <th className="border border-gray-300 dark:border-gray-600 p-2 text-gray-800 dark:text-gray-200">ID</th>
+                <th className="border border-gray-300 dark:border-gray-600 p-2 text-gray-800 dark:text-gray-200">Name</th>
+                <th className="border border-gray-300 dark:border-gray-600 p-2 text-gray-800 dark:text-gray-200">Email</th>
+                <th className="border border-gray-300 dark:border-gray-600 p-2 text-gray-800 dark:text-gray-200">Message</th>
+                <th className="border border-gray-300 dark:border-gray-600 p-2 text-gray-800 dark:text-gray-200">Sent At</th>
               </tr>
             </thead>
             <tbody>
               {messages.map((message) => (
-                <tr key={message.id}>
-                  <td className="border p-2">{message.id}</td>
-                  <td className="border p-2">{message.name}</td>
-                  <td className="border p-2">{message.email}</td>
-                  <td className="border p-2">{message.message}</td>
-                  <td className="border p-2">{message.sent_at}</td>
+                <tr key={message.id} className="bg-white dark:bg-gray-800">
+                  <td className="border border-gray-300 dark:border-gray-600 p-2 text-gray-800 dark:text-gray-200">{message.id}</td>
+                  <td className="border border-gray-300 dark:border-gray-600 p-2 text-gray-800 dark:text-gray-200">{message.name}</td>
+                  <td className="border border-gray-300 dark:border-gray-600 p-2 text-gray-800 dark:text-gray-200">{message.email}</td>
+                  <td className="border border-gray-300 dark:border-gray-600 p-2 text-gray-800 dark:text-gray-200">{message.message}</td>
+                  <td className="border border-gray-300 dark:border-gray-600 p-2 text-gray-800 dark:text-gray-200">{message.sent_at}</td>
                 </tr>
               ))}
             </tbody>

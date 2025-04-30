@@ -11,6 +11,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@sendgrid/mail": "^8.1.5",
     "axios": "^1.9.0",
     "basic-auth": "^2.0.1",
     "dotenv": "^16.4.5",
