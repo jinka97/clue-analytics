@@ -17,7 +17,7 @@ export default function Navbar() {
             <Link to="/blog" className={location.pathname === "/blog" ? "text-blue-600 font-semibold dark:text-blue-400" : "text-gray-700 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400 transition"}>Blog</Link>
             <Link to="/case-studies" className={location.pathname === "/case-studies" ? "text-blue-600 font-semibold dark:text-blue-400" : "text-gray-700 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400 transition"}>Case Studies</Link>
             <Link to="/contact" className={location.pathname === "/contact" ? "text-blue-600 font-semibold dark:text-blue-400" : "text-gray-700 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400 transition"}>Contact</Link>
-            <Link to="/privacy-policy" className={location.pathname === "/privacy-policy" ? "text-blue-600 font-semibold dark:text-blue-400" : "text-gray-700 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400 transition"}>Privacy Policy</Link>
+            <Link to="/fun" className={location.pathname === "/fun" ? "text-blue-600 font-semibold dark:text-blue-400" : "text-gray-700 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400 transition"}>Fun</Link>
           </div>
           <button onClick={toggleTheme} className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition">
             {theme === 'light' ? <FaMoon size={20} /> : <FaSun size={20} />}
@@ -27,3 +27,7 @@ export default function Navbar() {
     </nav>
   );
 }
+
+
+
+
