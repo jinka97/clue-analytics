@@ -1,4 +1,3 @@
-import Layout from "../components/Layout";
 import { useEffect } from "react";
 
 export default function Fun() {
@@ -12,7 +11,7 @@ export default function Fun() {
   }, []);
 
   return (
-    <Layout>
+    
       <section className="section-container py-16 text-center">
         <h1 className="text-4xl font-bold mb-4 text-gray-800 dark:text-gray-200">Welcome to the Clue Fun Corner 🧠</h1>
         <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto mb-8">
@@ -37,6 +36,5 @@ export default function Fun() {
 
         <p className="mt-4 text-sm text-gray-500 dark:text-gray-400">Redirecting in 10 seconds...</p>
       </section>
-    </Layout>
   );
 }
