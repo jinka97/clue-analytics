@@ -1,12 +1,13 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import axios from "axios";
 
 export default function NewsletterSignup() {
   const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+
+  const BASE_URL = 'https://europe-west1-clue-analytics.cloudfunctions.net/api';
 
   const validateEmail = (email: string) => {
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -31,18 +32,25 @@ export default function NewsletterSignup() {
     setIsLoading(true);
 
     try {
-      const response = await axios.post(
-        "https://clue-analytics-backend.onrender.com/subscribe",
-        { email },
-        { headers: { "Content-Type": "application/json" } }
-      );
+      const response = await fetch(`${BASE_URL}/subscribe`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to subscribe');
+      }
+
       setSubmitted(true);
       setEmail("");
-      console.log("Newsletter Signup:", response.data.message);
+      console.log("Newsletter Signup:", data.message);
     } catch (err: any) {
-      setError(
-        err.response?.data?.error || "Failed to subscribe. Please try again."
-      );
+      setError(err.message || "Failed to subscribe. Please try again.");
     } finally {
       setIsLoading(false);
     }

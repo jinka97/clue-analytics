@@ -16,6 +16,7 @@ export default function Footer() {
               <li><Link to="/about" className="hover:text-blue-400 transition">About</Link></li>
               <li><Link to="/blog" className="hover:text-blue-400 transition">Blog</Link></li>
               <li><Link to="/contact" className="hover:text-blue-400 transition">Contact</Link></li>
+              <li><Link to="/fun" className="hover:text-blue-400 transition">Fun</Link></li>
             </ul>
           </div>
           <div>
@@ -34,13 +35,15 @@ export default function Footer() {
           </div>
         </div>
         <div className="mt-8 text-center text-gray-400 text-sm border-t border-gray-700 pt-6">
-          © {new Date().getFullYear()} Clue Analytics. All rights reserved.
+          © {new Date().getFullYear()} Clue Analytics. All rights reserved. |{" "}
+          <Link to="/privacy-policy" className="underline">
+            Privacy Policy
+          </Link>
         </div>
       </div>
     </footer>
   );
 }
-
 
 
 

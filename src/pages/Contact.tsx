@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import axios from "axios";
 
 export default function Contact() {
   const [formData, setFormData] = useState({
@@ -11,6 +10,8 @@ export default function Contact() {
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+
+  const BASE_URL = 'https://europe-west1-clue-analytics.cloudfunctions.net/api';
 
   const validateEmail = (email: string) => {
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -50,18 +51,25 @@ export default function Contact() {
     setIsLoading(true);
 
     try {
-      const response = await axios.post(
-        "https://clue-analytics-backend.onrender.com/contact",
-        { name, email, message },
-        { headers: { "Content-Type": "application/json" } }
-      );
+      const response = await fetch(`${BASE_URL}/contact`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ name, email, message }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to send message');
+      }
+
       setSubmitted(true);
       setFormData({ name: "", email: "", message: "" });
-      console.log("Contact Form Submission:", response.data.message);
+      console.log("Contact Form Submission:", data.message);
     } catch (err: any) {
-      setError(
-        err.response?.data?.error || "Failed to send message. Please try again."
-      );
+      setError(err.message || "Failed to send message. Please try again.");
     } finally {
       setIsLoading(false);
     }

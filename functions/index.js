@@ -1,87 +1,61 @@
-require('dotenv').config();
+const functions = require('firebase-functions');
+const admin = require('firebase-admin');
 const express = require('express');
 const axios = require('axios');
 const NodeCache = require('node-cache');
-const admin = require('firebase-admin');
 const rateLimit = require('express-rate-limit');
-const auth = require('basic-auth');
 const sgMail = require('@sendgrid/mail');
+const cors = require('cors');
+
 const app = express();
 const cache = new NodeCache({ stdTTL: 3600 });
 
-app.set('trust proxy', 1);
+admin.initializeApp();
+const db = admin.database();
+
 app.use(express.json());
+app.use(cors({ origin: true }));
 
-// Enable CORS for all routes
-app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
-  res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-  next();
-});
-
-// Rate limiting for /subscribe and /contact endpoints
 const subscribeLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 10,
   message: 'Too many subscription attempts from this IP, please try again later.',
-  keyGenerator: (req) => {
-    const forwardedFor = req.headers['x-forwarded-for'];
-    return forwardedFor ? forwardedFor.split(',')[0].trim() : req.ip;
-  },
+  keyGenerator: (req) => req.headers['x-forwarded-for']?.split(',')[0].trim() || req.ip,
 });
 
 const contactLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 5,
   message: 'Too many contact messages from this IP, please try again later.',
-  keyGenerator: (req) => {
-    const forwardedFor = req.headers['x-forwarded-for'];
-    return forwardedFor ? forwardedFor.split(',')[0].trim() : req.ip;
-  },
+  keyGenerator: (req) => req.headers['x-forwarded-for']?.split(',')[0].trim() || req.ip,
 });
 
-// Initialize Firebase Admin SDK
-const serviceAccount = require('./clue-analytics-firebase-adminsdk.json');
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-  databaseURL: 'https://clue-analytics-default-rtdb.firebaseio.com'
-});
-const db = admin.database();
-
-// Validate API_KEY at startup
-const apiKey = process.env.API_KEY;
-if (!apiKey) {
-  console.error('Error: API_KEY environment variable is not set.');
-  process.exit(1);
-}
-
-// Configure SendGrid
-const sendgridApiKey = process.env.SENDGRID_API_KEY;
-if (!sendgridApiKey) {
-  console.error('Error: SENDGRID_API_KEY environment variable is not set.');
-  process.exit(1);
-}
+// Access environment variables with fallback for local development
+const sendgridApiKey = functions.config().sendgrid?.api_key || process.env.SENDGRID_API_KEY;
+if (!sendgridApiKey) throw new Error('SENDGRID_API_KEY environment variable is not set.');
 sgMail.setApiKey(sendgridApiKey);
 
-// Admin email for notifications
-const adminEmail = process.env.ADMIN_EMAIL;
-if (!adminEmail) {
-  console.error('Error: ADMIN_EMAIL environment variable is not set.');
-  process.exit(1);
-}
+const adminEmail = functions.config().admin?.email || process.env.ADMIN_EMAIL;
+if (!adminEmail) throw new Error('ADMIN_EMAIL environment variable is not set.');
 
-// Basic authentication middleware
-const authenticate = (req, res, next) => {
-  const user = auth(req);
-  if (!user || user.name !== 'admin' || user.pass !== apiKey) {
-    res.status(401).set('WWW-Authenticate', 'Basic realm="Clue Analytics Admin"');
-    return res.json({ error: 'Unauthorized' });
+// Middleware to verify Firebase ID token
+const authenticate = async (req, res, next) => {
+  const authHeader = req.headers.authorization;
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return res.status(401).json({ error: 'Unauthorized: No token provided' });
   }
-  next();
+
+  const idToken = authHeader.split('Bearer ')[1];
+  try {
+    const decodedToken = await admin.auth().verifyIdToken(idToken);
+    req.user = decodedToken;
+    next();
+  } catch (error) {
+    console.error('Error verifying token:', error);
+    res.status(401).json({ error: 'Unauthorized: Invalid token' });
+  }
 };
 
-// Endpoint to fetch RSS feed
 app.get('/fetch-feed', async (req, res) => {
   const { url } = req.query;
   if (!url) return res.status(400).json({ error: 'URL parameter is required' });
@@ -104,7 +78,6 @@ app.get('/fetch-feed', async (req, res) => {
   }
 });
 
-// Endpoint to handle newsletter subscriptions
 app.post('/subscribe', subscribeLimiter, async (req, res) => {
   const { email } = req.body;
   if (!email || typeof email !== 'string') return res.status(400).json({ error: 'Email is required and must be a string' });
@@ -119,7 +92,7 @@ app.post('/subscribe', subscribeLimiter, async (req, res) => {
 
     const subscriberMsg = {
       to: email,
-      from: 'jinkaproject97@gmail.com', // Replace with your verified sender email
+      from: 'jinkaproject97@gmail.com',
       subject: 'Thank You for Subscribing to Clue Analytics!',
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
@@ -141,7 +114,6 @@ app.post('/subscribe', subscribeLimiter, async (req, res) => {
   }
 });
 
-// Endpoint to handle contact form submissions
 app.post('/contact', contactLimiter, async (req, res) => {
   const { name, email, message } = req.body;
   if (!name || typeof name !== 'string') return res.status(400).json({ error: 'Name is required and must be a string' });
@@ -158,7 +130,7 @@ app.post('/contact', contactLimiter, async (req, res) => {
 
     const adminMsg = {
       to: adminEmail,
-      from: 'jinkaproject97@gmail.com', // Replace with your verified sender email
+      from: 'jinkaproject97@gmail.com',
       subject: 'New Contact Message from Clue Analytics',
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
@@ -180,7 +152,6 @@ app.post('/contact', contactLimiter, async (req, res) => {
   }
 });
 
-// Endpoint to retrieve subscribers (secured)
 app.get('/subscribers', authenticate, async (req, res) => {
   try {
     const snapshot = await db.ref('subscribers').once('value');
@@ -192,7 +163,6 @@ app.get('/subscribers', authenticate, async (req, res) => {
   }
 });
 
-// Endpoint to retrieve messages (secured)
 app.get('/messages', authenticate, async (req, res) => {
   try {
     const snapshot = await db.ref('messages').once('value');
@@ -204,8 +174,8 @@ app.get('/messages', authenticate, async (req, res) => {
   }
 });
 
-// Start the server
-const PORT = process.env.PORT || 10000;
-app.listen(PORT, () => {
-  console.log(`Backend server running on http://localhost:${PORT}`);
-});
+// Region is specified in firebase.json as europe-west1, so no need to set it here
+// exports.api = functions.https.onRequest(app);
+exports.api = functions.region('europe-west1').https.onRequest(app);
+
+

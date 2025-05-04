@@ -4,7 +4,7 @@ import tailwindcss from 'tailwindcss';
 import autoprefixer from 'autoprefixer';
 
 export default defineConfig({
-  base: '/clue-analytics/',  // Important for GitHub Pages!
+  base: '/', // for firebase and '/clue-analytics/' for GitHub Pages!
   plugins: [react()],
   css: {
     postcss: {
