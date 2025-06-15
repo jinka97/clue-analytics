@@ -18,7 +18,7 @@ const PrivacyPolicy: React.FC = () => {
       </p>
       <h2 className="text-xl font-semibold mb-2">Contact Us</h2>
       <p className="mb-4">
-        For questions about this policy, contact us at <a href="mailto:privacy@clueanalytics.com" className="underline">privacy@clueanalytics.com</a>.
+        For questions about this policy, contact us at <a href="mailto:clueanalytics7@gmail.com" className="underline">clueanalytics7@gmail.com</a>.
       </p>
       <p className="mt-8">
         <a href="#/" className="underline">Back to Home</a>
